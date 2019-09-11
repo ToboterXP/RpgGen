@@ -1,0 +1,97 @@
+//biome definitions
+
+//atomic tags
+atomic forested
+atomic grassy
+atomic wet
+atomic waterBody
+atomic hilly
+atomic flat
+atomic dry
+
+//tags
+tag swampy
+grassy
+wet
+
+tag water
+wet:1.5
+waterBody:1.5
+
+tag mountainous
+hilly:1.5
+hilly:1.5
+
+tag snowy
+wet:0.5
+
+//objects
+object TemperatePlains
+color 23 222 7
+chance 1.3
+grassy
+flat|hilly:0.3
+dry
+
+object LowLands
+color 0 255 0
+chance 1.3
+grassy:1.2
+flat:1.2
+dry
+
+object TemperateForest
+color 8 116 0
+chance 1.3
+forested
+grassy:0|grassy:0.2
+flat|hilly:0.3|flat:1.2
+dry
+
+object ThickForest
+color 8 80 0
+forested:1.5
+flat|hilly:0.3
+dry
+
+object SubalpineForest
+color 25 97 19
+chance 0.9
+forested
+dry
+hilly|hilly:0.5
+
+object SubalpinePlains
+color 46 187 49
+chance 0.9
+grassy
+dry
+hilly|hilly:0.5
+
+object RiverPlains
+color 12 165 48
+water
+grassy
+flat|hilly:0.3
+
+object LargeMountainRidge
+color 132 132 132
+chance 0.9
+mountainous|mountainous:1.2
+snowy
+grassy
+
+object SmallMountainRidge
+color 180 180 180
+mountainous:0.5|mountainous:0.8
+grassy
+
+object Swamp
+color 0 112 31
+chance 0.9
+swampy
+flat:1.2
+
+
+
+

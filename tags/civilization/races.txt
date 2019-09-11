@@ -1,0 +1,66 @@
+//races of intelligent beings
+
+require coarseBiomes
+
+//atomic tags
+
+atomic human
+atomic fantastic
+atomic civilized
+atomic uncivilized
+atomic independant
+atomic imperial
+
+
+//tags
+tag dwarfish
+human:0.5
+fantastic
+
+tag elvish
+human:0.5
+fantastic
+
+
+//objects
+object ImperialHumans
+human
+civilized
+imperial
+grassy
+flat
+
+object BarbaricHumans
+human
+uncivilized
+independant
+grassy
+flat|hilly:0.5
+
+object Dwarfs
+dwarfish
+civilized:0.5|uncivilized
+independant
+mountainous|mountainous:0.5
+grassy:0.5
+
+object Elves
+elvish
+forested|forested:0.7
+civilized
+imperial
+
+object WildElves
+elvish
+forested:1.3
+uncivilized:1.2
+independant
+
+object Halflings
+human
+civilized:0.5|civilized
+independant
+hilly:0.3|hilly:0.7
+
+
+

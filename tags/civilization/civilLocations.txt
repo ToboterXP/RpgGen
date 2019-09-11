@@ -1,0 +1,45 @@
+//general civil locations
+
+require fineBiomes
+require races
+
+//atomic tags
+atomic town
+
+//tags
+tag trading
+town
+runningWater
+stagnantWater
+
+//objects
+object Village
+human
+town:0.5
+grassy
+civilized|uncivilized
+flat
+trading:0.5
+
+object City
+human
+town
+grassy:0.5
+civilized
+flat
+trading
+
+
+object MountainHome
+dwarfish
+town
+mountainous:1.5
+trading:0.5
+
+object TreeCity
+elvish
+town
+civilized
+forested:1.2
+trading:0.5
+

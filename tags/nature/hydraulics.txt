@@ -1,0 +1,25 @@
+//hydraulic objects
+
+require fineBiomes
+
+atomic runningWater
+atomic stagnantWater
+atomic streamPower
+
+
+object Stream
+water:0.5
+runningWater:0.5
+
+object River
+water
+runningWater
+
+object Pond
+water:0.5
+stagnantWater:0.5
+
+object Lake
+water
+stagnantWater
+

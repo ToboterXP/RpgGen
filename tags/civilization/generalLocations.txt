@@ -1,0 +1,23 @@
+//general locations in the world
+
+//objects
+object Cave
+mountainous|hilly|hilly:0.5
+
+object Farm
+civilized|uncivilized
+grassy
+
+object GuardTower
+civilized|uncivilized
+
+object Castle
+hilly
+civilized
+
+object Mine
+mountainous|hilly:1.5
+
+object Ruin
+civilized|uncivilized
+

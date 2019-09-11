@@ -1,0 +1,42 @@
+//fine biome definitions
+require coarseBiomes
+
+
+//objects
+
+object Hills
+grassy
+hilly|hilly:0.5
+
+object WoodedHills
+forested
+hilly:0.5
+
+object Plain
+grassy
+dry
+flat:1.2
+
+object Swamp
+chance 0.7
+swampy
+wet
+flat:1.2
+
+object SmallMountain
+mountainous:1.5
+
+object LargeMountain
+mountainous:1.5
+snowy
+
+object LightWood
+forested:0.5
+
+object MediumWood
+forested
+
+object ThickWood
+forested:1.5
+
+

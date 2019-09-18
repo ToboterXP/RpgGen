@@ -8,6 +8,7 @@ class Vector2:
         self.b = b
 
     UNIT = None
+    INVERT = None
 
     def __add__(self,other):
         return Vector2(self.a + other.a, self.b + other.b)
@@ -47,7 +48,14 @@ class Vector2:
     def floatMultiply(self, other):
         return Vector2(self.a * other, self.b * other)
 
+    def __hash__(self):
+        return self.a**20 + self.b
+
+    def __eq__(self,other):
+        return self.a == other.a and self.b == other.b
+
 Vector2.UNIT = Vector2(0,-1)
+Vector2.INVERT = Vector2(-1,-1)
 
 class MapGraph:
     def __init__(self, connectionDistance, size):
@@ -69,13 +77,13 @@ class MapGraph:
     def addNode(self,node):
         cellPos = MapGraph.getCellularPos(node.getPos())
         self.cellularNodeMap[cellPos.a][cellPos.b].append(node)
-        
+
         for n in self.getCloseNodes(node.getPos()):
             if abs(n.getPos() - node.getPos()) <= self.connectionDistance:
                 n.addConnection(node)
 
         self.nodes.append(node)
-        
+
 
     def getCloseNodes(self,pos,sort = None):
         cellPos = MapGraph.getCellularPos(pos)
@@ -118,8 +126,8 @@ class MapGraph:
 
     def getNodes(self):
         return self.nodes
-                
-        
+
+
 
 class MapGraphNode:
     def __init__(self,pos):
@@ -178,9 +186,9 @@ class MapGraphNode:
                 tags.append(tag*0.7)
 
         return tags
-        
 
-        
+
+
 
 class Tag:
     def __init__(self,name,parents=tuple(),excluded=tuple(),valueRange = (0,1)):
@@ -252,7 +260,7 @@ class WeightedTag:
     def compare(self,other,i=0):
         weight = max(self.getWeight(),other.getWeight())-abs(self.getWeight()-other.getWeight())
         return max(self.getTag().compare(other.getTag(),i+1)*weight, 0)
-        
+
 
 class TaggedObjectTemplate:
     def __init__(self, name, weightedTags, color, baseChance):
@@ -271,7 +279,7 @@ class TaggedObjectTemplate:
             tagList.append(r.choice(tagPoss))
 
         return TaggedObject(self.name, tagList, self.color, self, self.baseChance)
-    
+
 
 class TaggedObject:
     def __init__(self,name,weightedTags,color,template,baseChance):
@@ -306,9 +314,3 @@ class TaggedObject:
                 amount += myTag.getWeight() * otherTag.getWeight()
 
         return score/amount*self.baseChance
-
-    
-        
-
-if __name__=="__main__":
-    pass

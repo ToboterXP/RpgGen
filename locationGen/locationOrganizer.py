@@ -1,13 +1,17 @@
 
 import math
 import random as r
+import randomUtil as ru
 from locationGen.locationConnection import LocationConnection
+from locationGen.locationContent import *
 from util import *
 import copy
+from locationGen.locationType import *
 
 def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,step = Vector2(1,1)):
     if not subLocations:
         return
+    assert superConnections
     organizedLocs = copy.copy(subLocations)
     organizedPos = {}
     revOrganizedPos = {}
@@ -16,11 +20,12 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
     i = 0
     maxX = 0
     maxY = 0
+    origin = superLocation.getPos() - step.nMultiply(side/2)
     for x in range(side):
         for y in range(side):
             organizedPos[organizedLocs[i]] = Vector2(x,y)
             revOrganizedPos[Vector2(x,y)] = organizedLocs[i]
-            organizedLocs[i].setPos(superLocation.getPos() + step*Vector2(x,y))
+            organizedLocs[i].setPos(origin + step*Vector2(x,y))
             i+=1
             if i==len(organizedLocs):
                 maxY = y
@@ -33,7 +38,7 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
     connected = []
 
     startedConnection = False
-    for sc in superConnections:
+    for sc in superConnections[:]:
         direction = sc.getDirection(superLocation)
         selectedLoc = None
         if abs(direction.a)<abs(direction.b):
@@ -49,7 +54,7 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
             x = 0 if direction.a<0 else maxX
             selectedLoc = revOrganizedPos[Vector2(x,y)]
 
-        selectedLoc.addConnection(LocationConnection(selectedLoc,superLocation,l2c=sc))
+        LocationConnection(selectedLoc,superLocation,l2c=sc)
         if not startedConnection:
             startedConnection = True
             connected.append(selectedLoc)
@@ -67,8 +72,6 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
                         continue
                     if target in unconnected:
                         newConnection = LocationConnection(con,target)
-                        con.addConnection(newConnection)
-                        target.addConnection(newConnection)
                         unconnected.remove(target)
                         connected.append(target)
                         break
@@ -83,8 +86,6 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
                         continue
                     if target in connected:
                         newConnection = LocationConnection(con,target)
-                        con.addConnection(newConnection)
-                        target.addConnection(newConnection)
                         unconnected.remove(con)
                         connected.append(con)
                         break
@@ -105,8 +106,6 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
             continue
 
         newConnection = LocationConnection(loc,otherLoc)
-        loc.addConnection(newConnection)
-        otherLoc.addConnection(newConnection)
 
         cCount -= 1
         if cCount <=0:
@@ -115,4 +114,41 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
 
 
 def organizeWithRoads(subLocations,superConnections,superLocation,roadTypes,crossingTypes,step = 1):
-    pass
+    externalRoadCount = len(superConnections)
+    locsPerExRoad = math.ceil(len(subLocations)/externalRoadCount)
+    centralCrossing = LocationContent(r.choice(crossingTypes)()).getLocation([],ru.getRandomSeed())
+
+    remainingLocations = subLocations[:]
+    subLocations.append(centralCrossing)
+    for exit in superConnections[:]:
+        assignedLocations = remainingLocations[:locsPerExRoad] if len(remainingLocations)>=locsPerExRoad else remainingLocations[:]
+        for l in assignedLocations:
+            remainingLocations.remove(l)
+
+        roadDirection = exit.getDirection(superLocation).normalize().nMultiply(step)
+        lastRoad = centralCrossing
+        roadPos = centralCrossing.getPos()
+        while assignedLocations:
+            roadPos += roadDirection
+            newRoad = LocationContent(r.choice(roadTypes)()).getLocation([],ru.getRandomSeed())
+            newRoad.setPos(roadPos)
+            roadConnection = LocationConnection(newRoad,lastRoad)
+            subLocations.append(newRoad)
+            lastRoad = newRoad
+
+            leftPos = roadPos+roadDirection.rotate(0.25)
+            leftLoc = assignedLocations.pop()
+            leftLoc.setPos(leftPos)
+            LocationConnection(newRoad,leftLoc)
+
+            if not assignedLocations:
+                break
+
+            rightPos = roadPos+roadDirection.rotate(0.75)
+            rightLoc = assignedLocations.pop()
+            rightLoc.setPos(rightPos)
+            LocationConnection(newRoad,rightLoc)
+
+        LocationConnection(superLocation,lastRoad,l1c=exit)
+
+    assert not remainingLocations

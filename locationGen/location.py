@@ -24,6 +24,9 @@ class Location:
     def addConnection(self,conn):
         self.connections.append(conn)
 
+    def removeConnection(self,conn):
+        self.connections.remove(conn)
+
     def getConnections(self):
         return self.connections
 
@@ -40,11 +43,11 @@ class Location:
             loc.loadContent()
 
     def unloadContent(self,deleteConns=False):
-        for sl in self.subLocations:
+        for sl in self.subLocations[:]:
             sl.unloadContent(True)
             del sl
         if deleteConns:
-            for c in self.connections:
+            for c in self.connections[:]:
                 c.delete()
         self.given += self.taken
         self.taken = []

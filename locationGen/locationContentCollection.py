@@ -46,7 +46,7 @@ class LocationContentCollection:
             if item.getItems():
                 content += item.generateContent(given)
             else:
-                content.append(item.getLocation(given,ru.getRandomSeed()))
+                content.insert(0,item.getLocation(given,ru.getRandomSeed()))
 
             itemCount -= 1
             if itemCount<=0:
@@ -57,7 +57,7 @@ class LocationContentCollection:
             if item.getItems():
                 content += item.generateContent(given)
             else:
-                content.append(item.getLocation(given,ru.getRandomSeed()))
+                content.insert(0,item.getLocation(given,ru.getRandomSeed()))
 
         self.organize(content,superConnections,superLocation)
         return content

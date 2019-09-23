@@ -3,10 +3,12 @@ from util import Vector2
 class LocationConnection:
     def __init__(self,l1,l2,l1c=None,l2c=None):
         self.l1 = l1
+        l1.addConnection(self)
         self.l1Connection = l1c
         if l1c:
             l1c.setLocationConnection(l1,self)
         self.l2 = l2
+        l2.addConnection(self)
         self.l2Connection = l2c
         if l2c:
             l2c.setLocationConnection(l2,self)
@@ -18,6 +20,8 @@ class LocationConnection:
             self.l2Connection = conn
 
     def delete(self):
+        self.l1.removeConnection(self)
+        self.l2.removeConnection(self)
         if self.l1Connection:
             self.l1Connection.setLocationConnection(self.l1,None)
         if self.l2Connection:

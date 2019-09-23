@@ -35,9 +35,9 @@ def generateWorld(menu=True):
     MAP_SIZE = Vector2(150,150)
     WINDOW_SIZE = Vector2(750,750)
     HISTORY_LENGTH = 100
-    DISPLAY_HISTORY = True
+    DISPLAY_HISTORY = False
 
-    print("Generating coarse map")    
+    print("Generating coarse map")
     coarseBiomeMap = generateEmptyMap(MAP_SIZE,Vector2(4,4), Vector2(15,15), 28)
     fillMap(coarseBiomeMap, "coarseBiomes")
 
@@ -100,7 +100,7 @@ def generateWorld(menu=True):
     civilLocBG = visualizeIconMap(generalLocMap, "./tags/civilization/civilLocationIcons", "generalLocations", WINDOW_SIZE)
     civilLocBG.set_colorkey((255,255,255))
     coarseBG.blit(civilLocBG, (0,0))
-    
+
     print("Visualizing")
     return visualizeGraph(
         #[VisualGraph(fineBiomeMap,(0,0,0)), VisualGraph(coarseBiomeMap,(255,255,0)), VisualGraph(racialMap,(0,0,255))

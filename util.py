@@ -19,6 +19,12 @@ class Vector2:
     def __mul__(self,other):
         return Vector2(self.a * other.a, self.b * other.b)
 
+    def nMultiply(self,num):
+        return Vector2(self.a * num, self.b * num)
+
+    def nDivide(self,num):
+        return Vector2(self.a / num, self.b / num)
+
     def __truediv__(self,other):
         return Vector2(self.a / other.a, self.b / other.b)
 
@@ -26,7 +32,7 @@ class Vector2:
         return math.sqrt(self.a**2 + self.b**2)
 
     def __str__(self):
-        return "{%d, %d}" % (self.a,self.b)
+        return "{%.2f, %.2f}" % (round(self.a,2),round(self.b,2))
 
     def __iter__(self):
         return iter((self.a, self.b))
@@ -40,7 +46,7 @@ class Vector2:
     def rotate(self, angle):
         radians = angle * 2*math.pi
         return Vector2(self.a*math.cos(radians) - self.b*math.sin(radians),
-                       self.b*math.sin(radians) + self.b*math.cos(radians))
+                       self.a*math.sin(radians) + self.b*math.cos(radians))
 
     def getAngleTowards(self,other):
         return math.acos( (self.a*other.a + self.b*other.b)/(abs(self)*abs(other)) ) / (2*math.pi)
@@ -49,10 +55,13 @@ class Vector2:
         return Vector2(self.a * other, self.b * other)
 
     def __hash__(self):
-        return self.a**20 + self.b
+        return int(self.a**20 + self.b)
 
     def __eq__(self,other):
         return self.a == other.a and self.b == other.b
+
+    def normalize(self):
+        return self.nDivide(abs(self))
 
 Vector2.UNIT = Vector2(0,-1)
 Vector2.INVERT = Vector2(-1,-1)

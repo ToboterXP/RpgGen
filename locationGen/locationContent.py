@@ -14,4 +14,4 @@ class LocationContent:
         return []
 
     def getLocation(self,given,seed):
-        return Location(self.type,given,seed)
+        return Location(self.type,given,seed, propertyTemplates=self.type.propertyTemplates)

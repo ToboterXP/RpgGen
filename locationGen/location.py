@@ -1,9 +1,10 @@
 import random as r
 import copy
 from util import *
+from locationGen.locationProperty import *
 
 class Location:
-    def __init__(self,type,given,seed,pos=Vector2(0,0)):
+    def __init__(self,type,given,seed,pos=Vector2(0,0),propertyTemplates=[]):
         self.seed = seed
         self.pos = pos
         self.type = type
@@ -11,6 +12,8 @@ class Location:
         self.taken = []
         self.subLocations = []
         self.connections = []
+
+        self.properties = [t.instantiate(self) for t in propertyTemplates]
 
     def getPos(self):
         return self.pos
@@ -53,6 +56,20 @@ class Location:
         self.taken = []
         self.subLocations = []
 
+    def getProperties(self,tag):
+        for p in self.properties:
+            if tag in p.getTypes():
+                yield p
+
+    def getDescription(self):
+        ret = ""
+        descProps = list(self.getProperties(LocationPropertyType.LPT_DESCRIPTION))
+        descProps.sort(key=lambda p: p.getDescPrority())
+        for p in descProps:
+            ret += p.getDescription() + "\n\n"
+
+        return ret[:-2]
+
     def printSubLocations(self,prefix="",start=True):
         if start:
             print(self.type.name)
@@ -70,7 +87,7 @@ class Location:
                 else:
                     connections += "X, "
             connections = "("+connections[:-2]+")"
-            print(prefix+str(i)+".", sl.getType().name ,connections,sl.getPos())
+            print(prefix+str(i)+".", sl.getDescription() ,connections,sl.getPos())
             sl.printSubLocations(prefix+"  ",False)
             if sl.getSubLocations():
                 print()

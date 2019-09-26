@@ -1,5 +1,5 @@
 
-import random as r
+import randomUtil as r
 import randomUtil as ru
 
 

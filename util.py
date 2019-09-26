@@ -1,6 +1,6 @@
 
 import math
-import random as r
+import randomUtil as r
 
 class Vector2:
     def __init__(self,a,b):

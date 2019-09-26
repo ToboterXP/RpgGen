@@ -1,4 +1,4 @@
-import random as r
+import randomUtil as r
 
 class CharacterAttributes:
     def __init__(self,body=6,agility=6,mind=6):

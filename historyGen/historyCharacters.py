@@ -1,5 +1,5 @@
 from historyGen.historyItems import *
-import random as r
+import randomUtil as r
 import copy
 
 class PersonalityTrait:

@@ -1,4 +1,4 @@
-import random as r
+import randomUtil as r
 import copy
 from util import *
 from locationGen.locationProperty import *
@@ -14,6 +14,17 @@ class Location:
         self.connections = []
 
         self.properties = [t.instantiate(self) for t in propertyTemplates]
+        self.objects = []
+
+        for p in self.getProperties(LocationPropertyType.LPT_INIT):
+            r.pushNewSeed()
+            p.onInit()
+            r.popSeed()
+
+    def getProperties(self,type):
+        for p in self.properties:
+            if type in p.getTypes():
+                yield p
 
     def getPos(self):
         return self.pos
@@ -32,6 +43,15 @@ class Location:
 
     def getConnections(self):
         return self.connections
+
+    def addObject(self,obj):
+        self.objects.append(obj)
+
+    def removeObject(self,obj):
+        self.objects.remove(obj)
+
+    def getObjects(self):
+        return self.objects
 
     def getSubLocations(self):
         return self.subLocations
@@ -91,3 +111,6 @@ class Location:
             sl.printSubLocations(prefix+"  ",False)
             if sl.getSubLocations():
                 print()
+
+            for o in sl.getObjects():
+                print(prefix+" o> "+o.getDebugDescription())

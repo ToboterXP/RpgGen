@@ -1,5 +1,5 @@
 
-import random as r
+import randomUtil as r
 
 class TextItem:
     def __init__(self,leftLimit,rightLimit):

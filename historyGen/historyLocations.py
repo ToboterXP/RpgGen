@@ -1,4 +1,4 @@
-import random as r
+import randomUtil as r
 from historyGen.historyCharacters import CHARACTER_RACES,PersonalityTraits
 
 class LocationState:

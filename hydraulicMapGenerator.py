@@ -2,7 +2,7 @@
 from util import *
 from loader import *
 
-import random as r
+import randomUtil as r
 
 class HydraulicNode(MapGraphNode):
     def __init__(self,pos,power,score, direction = None, isSource=False):

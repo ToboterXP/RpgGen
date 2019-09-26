@@ -1,6 +1,6 @@
 
 import math
-import random as r
+import randomUtil as r
 import randomUtil as ru
 from locationGen.locationConnection import LocationConnection
 from locationGen.locationContent import *

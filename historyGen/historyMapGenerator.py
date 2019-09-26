@@ -3,7 +3,7 @@ from historyGen.historyEvents import *
 from historyGen.historyLocations import *
 from util import *
 from graphicMenus import *
-import random as r
+import randomUtil as r
 import math
 
 

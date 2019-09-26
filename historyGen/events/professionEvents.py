@@ -2,7 +2,7 @@ from historyGen.historyEvents import *
 from historyGen.historyCharacters import *
 from historyGen.historyItems import *
 from historyGen.historyLocations import *
-import random as r
+import randomUtil as r
 import copy
 
 class HEvChooseProfession(HistoricEvent):

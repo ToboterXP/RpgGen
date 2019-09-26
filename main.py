@@ -5,7 +5,7 @@ from visualizer import *
 from mapGenerator import *
 from hydraulicMapGenerator import *
 from historyGen.historyMapGenerator import *
-import random
+import randomUtil
 import sys
 
 

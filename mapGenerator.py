@@ -3,7 +3,7 @@ from loader import *
 from util import *
 from visualizer import *
 
-import random as r
+import randomUtil as r
 
 
 def generateEmptyMap(dimensions,quadrantBounds, quadrantSize, connectionDistance):

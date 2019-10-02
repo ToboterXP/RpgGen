@@ -12,19 +12,25 @@ class Location:
         self.taken = []
         self.subLocations = []
         self.connections = []
-
-        self.properties = [t.instantiate(self) for t in propertyTemplates]
         self.objects = []
 
-        for p in self.getProperties(LocationPropertyType.LPT_INIT):
-            r.pushNewSeed()
-            p.onInit()
-            r.popSeed()
+        self.properties = [t.instantiate(self) for t in propertyTemplates]
 
     def getProperties(self,type):
         for p in self.properties:
             if type in p.getTypes():
                 yield p
+
+    def getContexts(self,type):
+        for p in self.properties:
+            if LocationPropertyType.LPT_CONTEXT in p.getTypes() and type==p.getContextName():
+                yield p.getContext()
+
+    def getLocationName(self):
+        return list(self.getContexts("HistoryLocation"))[0].getCurrentState().name
+
+    def attachProperty(self,prop):
+        self.properties.append(prop.instantiate(self))
 
     def getPos(self):
         return self.pos
@@ -60,10 +66,11 @@ class Location:
         return self.type
 
     def loadContent(self):
-        r.seed(self.seed)
+        r.pushSeed(self.seed)
         self.subLocations = self.type.rootContentCollection.generateLocations(self.given,self.taken,self.connections,self)
         for loc in self.subLocations:
             loc.loadContent()
+        r.popSeed()
 
     def unloadContent(self,deleteConns=False):
         for sl in self.subLocations[:]:
@@ -92,7 +99,7 @@ class Location:
 
     def printSubLocations(self,prefix="",start=True):
         if start:
-            print(self.type.name)
+            print(self.getLocationName(),self.type.name,self.pos)
         for sl in self.subLocations:
             i = self.subLocations.index(sl)
             connections = ""

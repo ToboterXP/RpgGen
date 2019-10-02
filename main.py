@@ -5,7 +5,8 @@ from visualizer import *
 from mapGenerator import *
 from hydraulicMapGenerator import *
 from historyGen.historyMapGenerator import *
-import randomUtil
+from worldMapGen.worldMapGenerator import *
+import randomUtil as r
 import sys
 
 
@@ -35,7 +36,7 @@ def generateWorld(menu=True):
     MAP_SIZE = Vector2(150,150)
     WINDOW_SIZE = Vector2(750,750)
     HISTORY_LENGTH = 100
-    DISPLAY_HISTORY = False
+    DISPLAY_HISTORY = True
 
     print("Generating coarse map")
     coarseBiomeMap = generateEmptyMap(MAP_SIZE,Vector2(4,4), Vector2(15,15), 28)
@@ -71,10 +72,16 @@ def generateWorld(menu=True):
     print("Generating history")
     historyMap = generateHistory(fineBiomeMap, racialMap, civilLocMap, generalLocMap, HISTORY_LENGTH, Vector2(25,25),2)
 
-    print("Displaying history menu")
-    if not menu:
-        return
+    print("Generating world map")
+    world = generateWorldMap(coarseBiomeMap,fineBiomeMap,hydroMap,historyMap)
+
+    testLoc = r.choice(world.getLocations())
+    testLoc.loadContent()
+    testLoc.printSubLocations()
+    testLoc.unloadContent()
+
     if DISPLAY_HISTORY:
+        print("Displaying history menu")
         displayHistoryExplorer(historyMap, HISTORY_LENGTH)
         return False
 
@@ -111,15 +118,7 @@ def generateWorld(menu=True):
 
 if __name__=="__main__":
     sys.setrecursionlimit(100)
-##    for i in range(4,100):
-##        r.seed(i)
-##        try:
-##            generateWorld(False)
-##        except:
-##            print(i)
-##            print("-----")
-##            exit()
-    r.seed(10)
+    r.seed(9637870805)
     run = True
     while run:
         run = generateWorld()

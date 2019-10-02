@@ -13,10 +13,12 @@ def pushNewSeed():
     pushSeed(getRandomSeed())
 
 def pushSeed(seed):
+    global currentRandom
     currentRandoms.append(r.Random(seed))
     currentRandom = currentRandoms[-1]
 
 def popSeed():
+    global currentRandom
     currentRandoms.pop()
     currentRandom = currentRandoms[-1]
 

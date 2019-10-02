@@ -6,4 +6,4 @@ class LocationType:
         self.rootContentCollection = rootContentCollection
         self.attachTags = attachTags
         self.name = name
-        self.propertyTemplates = propertyTemplates
+        self.propertyTemplates = list(propertyTemplates)

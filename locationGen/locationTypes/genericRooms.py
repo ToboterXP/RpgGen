@@ -5,9 +5,7 @@ from locationGen.locationContentCollection import *
 from locationGen.locationProperty import *
 from locationGen.objects.lootTables.village.basicFurniture import *
 
-class LivingRoomType(LocationType):
-    def __init__(self):
-        super().__init__([RO_GEN_LIVING_QUARTER,LEVEL_ROOM],
+LivingRoomType = LocationType([RO_GEN_LIVING_QUARTER,LEVEL_ROOM],
                         LocationContentCollection.EMPTY,
                         "LivingRoom",
                         propertyTemplates = [
@@ -16,9 +14,7 @@ class LivingRoomType(LocationType):
                         ])
 
 
-class BedRoomType(LocationType):
-    def __init__(self):
-        super().__init__([RO_GEN_SLEEPING_QUARTER,LEVEL_ROOM],
+BedRoomType = LocationType([RO_GEN_SLEEPING_QUARTER,LEVEL_ROOM],
                         LocationContentCollection.EMPTY,
                         "BedRoom",
                         propertyTemplates = [

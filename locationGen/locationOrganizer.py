@@ -116,7 +116,8 @@ def organizeBasic(subLocations,superConnections,superLocation,extraConRate=0.3,s
 def organizeWithRoads(subLocations,superConnections,superLocation,roadTypes,crossingTypes,step = 1):
     externalRoadCount = len(superConnections)
     locsPerExRoad = math.ceil(len(subLocations)/externalRoadCount)
-    centralCrossing = LocationContent(r.choice(crossingTypes)()).getLocation([],ru.getRandomSeed())
+    centralCrossing = LocationContent(r.choice(crossingTypes)).getLocation([],ru.getRandomSeed())
+    centralCrossing.setPos(superLocation.getPos())
 
     remainingLocations = subLocations[:]
     subLocations.append(centralCrossing)
@@ -124,13 +125,12 @@ def organizeWithRoads(subLocations,superConnections,superLocation,roadTypes,cros
         assignedLocations = remainingLocations[:locsPerExRoad] if len(remainingLocations)>=locsPerExRoad else remainingLocations[:]
         for l in assignedLocations:
             remainingLocations.remove(l)
-
         roadDirection = exit.getDirection(superLocation).normalize().nMultiply(step)
         lastRoad = centralCrossing
         roadPos = centralCrossing.getPos()
         while assignedLocations:
             roadPos += roadDirection
-            newRoad = LocationContent(r.choice(roadTypes)()).getLocation([],ru.getRandomSeed())
+            newRoad = LocationContent(r.choice(roadTypes)).getLocation([],ru.getRandomSeed())
             newRoad.setPos(roadPos)
             roadConnection = LocationConnection(newRoad,lastRoad)
             subLocations.append(newRoad)

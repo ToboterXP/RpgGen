@@ -6,13 +6,11 @@ from locationGen.locationContentTag import *
 from locationGen.locationTypes.genericRooms import *
 from locationGen.locationOrganizer import *
 
-class BasicHouseType(LocationType):
-    def __init__(self):
-        super().__init__([VL_BUILDING,LEVEL_BUILDING],
+BasicHouseType = LocationType([VL_BUILDING,LEVEL_BUILDING],
                         LocationContentCollection(
                             [
-                                LocationContent(LivingRoomType()),
-                                LocationContent(BedRoomType())
+                                LocationContent(LivingRoomType),
+                                LocationContent(BedRoomType)
                             ],
                             range(2,5),
                             (LEVEL_ROOM,),

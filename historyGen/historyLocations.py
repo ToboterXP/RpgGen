@@ -1,5 +1,6 @@
 import randomUtil as r
 from historyGen.historyCharacters import CHARACTER_RACES,PersonalityTraits
+import copy
 
 class LocationState:
     def __init__(self,existing,name):
@@ -8,7 +9,7 @@ class LocationState:
         self.name = name
         self.existing = existing
         self.storedItems = []
-        
+
         self.adminLocation = None
         self.subordinateLocs = []
         self.lostLocations = []
@@ -28,7 +29,7 @@ class LocationState:
             charList += c.getName()+"\n"
 
         adminLoc = self.adminLocation.getName() if self.adminLocation else "None"
-        
+
 
         subLocs = ""
         for s in self.subordinateLocs:
@@ -55,7 +56,7 @@ class HistoryLocation:
         self.localRace = context.getRacialMap().getClosest(self.node.getPos())
         self.state.race = self.localRace.getObject().getName()
         self.localRace = CHARACTER_RACES[self.localRace.getObject().getName()]
-        
+
         if self.localRace.imperial and self.state.existing and self.locationType.independant:
             for locNode in (context.getCivilLocMap().getMultipleClosest(self.node.getPos(),5)
                             +context.getGeneralLocMap().getMultipleClosest(self.node.getPos(),5)):
@@ -67,7 +68,7 @@ class HistoryLocation:
                     loc = locNode.getAttachedContext(HistoryLocation)
                 except:
                     continue
-                
+
                 if (loc.getLocationType().foundable
                     and (loc.getLocalRace().imperial or (not loc.getLocationType().independant))
                     and loc.getLocalRace()==self.localRace
@@ -96,7 +97,7 @@ class HistoryLocation:
 
     def _removeSubordinate(self,loc):
         self.state.subordinateLocs.remove(loc)
-        
+
     def setAdminLocation(self,loc,malicious=True):
         if self.state.adminLocation:
             self.state.adminLocation._removeSubordinate(self)
@@ -121,12 +122,13 @@ class HistoryLocation:
 
     def addEvent(self,event):
         self.events.append(event)
+        prevState = copy.copy(self.state)
         self.state = event.getModifiedLocationState(self,self.getCurrentState())
-        self.getMainAdmin()
+        self.getMainAdmin() #just to assert that there is no soft-lock potential
 
     def getPos(self):
         return self.node.getPos()
-    
+
     def getCurrentState(self):
         return self.state
 
@@ -156,21 +158,27 @@ class HistoryLocation:
         return rets
 
 class HistoricLocationType:
-    def __init__(self,foundable=False,livable=False,independant=False,size=1):
+    def __init__(self,name,foundable=False,livable=False,independant=False,size=1):
         self.foundable = foundable
+        self.name = name
         self.livable = livable
         self.independant = independant
         self.size = size
 
-HISTORIC_LOCATION_TYPE = {
-    "Village":HistoricLocationType(True,True,True,size=3),
-    "City":HistoricLocationType(True,True,True,size=5),
-    "MountainHome":HistoricLocationType(True,True,True,size=4),
-    "TreeCity":HistoricLocationType(True,True,True,size=4),
-    "Farm":HistoricLocationType(True,True),
-    "GuardTower":HistoricLocationType(True),
-    "Mine":HistoricLocationType(True),
-    "Castle":HistoricLocationType(True,True,True,size=2),
-    "Ruin":HistoricLocationType(),
-    "Cave":HistoricLocationType()
-    }
+HISTORIC_LOCATION_TYPE_LIST = [
+    HistoricLocationType("Village",True,True,True,size=3),
+    HistoricLocationType("City",True,True,True,size=5),
+    HistoricLocationType("MountainHome",True,True,True,size=4),
+    HistoricLocationType("TreeCity",True,True,True,size=4),
+    HistoricLocationType("Farm",True,True),
+    HistoricLocationType("GuardTower",True),
+    HistoricLocationType("Mine",True),
+    HistoricLocationType("Castle",True,True,True,size=2),
+    HistoricLocationType("Ruin"),
+    HistoricLocationType("Cave")
+]
+
+HISTORIC_LOCATION_TYPE = {}
+
+for t in HISTORIC_LOCATION_TYPE_LIST:
+    HISTORIC_LOCATION_TYPE[t.name] = t

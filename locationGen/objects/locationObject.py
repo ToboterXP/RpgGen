@@ -16,12 +16,15 @@ class LocationObject:
         return self.location
 
     def move(self,location):
-        self.location.removeObject(self)
-        location.addObject(self)
+        if self.location:
+            self.location.removeObject(self)
+        if location:
+            location.addObject(self)
         self.location = location
 
     def delete(self):
-        self.location.removeObject(self)
+        if self.location:
+            self.location.removeObject(self)
 
     def getProperty(self,type):
         for p in self.properties:

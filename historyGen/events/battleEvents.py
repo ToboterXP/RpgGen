@@ -27,21 +27,27 @@ class HEvBattle(HistoricEvent):
         if not inevitable and startPart.getPersonality().warmonger < r.randint(1,15):
             self.setAlternateEvent(HEvDiplomaticBattle(pos,time,context,inevitable=True))
             return
-            
+
         self.participants = [startPart]
-            
+
 
         self.reconquest = False
-        if startPart.getCurrentState().lostLocations:
+
+        lostLocations = []      #prevent conquest of own admin
+        for l in startPart.getCurrentState().lostLocations:
+            if l.getMainAdmin() != startPart.getMainAdmin():
+                lostLocations.append(l)
+
+        if lostLocations:
             self.reconquest = True
-            self.participants.append(r.choice(startPart.getCurrentState().lostLocations))
+            self.participants.append(r.choice(lostLocations))
         else:
             for p in participantNodes:
                 part = p.getAttachedContext(HistoryLocation)
                 if part==startPart:
                     continue
-                if (part.getMainAdmin() != self.participants[0].getMainAdmin()
-                and not part in startPart.getCurrentState().friendlyLocations):
+                if ((part.getMainAdmin() != self.participants[0].getMainAdmin())
+                and (not part in startPart.getCurrentState().friendlyLocations)):
 
                     self.participants.append(p.getAttachedContext(HistoryLocation))
                     break
@@ -49,11 +55,11 @@ class HEvBattle(HistoricEvent):
         if len(self.participants)!=2:
             self.setSuccessful(False)
             return
-            
+
         if abs(self.participants[0].getPos()-self.participants[1].getPos()) > 15:
             self.setSuccessful(False)
             return
-        
+
         characters = []
         self.dyingCharacters = []
         for part in self.participants:
@@ -87,7 +93,7 @@ class HEvBattle(HistoricEvent):
         self.conquest = False
         if abs(winScore[0]-winScore[1])>r.randint(1,3):
             self.conquest = True
-            
+
         if self.conquest:
             self.formerAdmin = self.loser.getCurrentState().adminLocation
             if self.formerAdmin:
@@ -104,11 +110,11 @@ class HEvBattle(HistoricEvent):
                 while trauma in c.getCurrentState().personalityTraits:
                     trauma = r.choice(PersonalityTraits.TRAUMATIC_TRAITS)
                 self.traumata[c] = trauma
-        
+
         self.spoils = []
         for c in self.dyingCharacters:
             self.spoils += c.getCurrentState().items
-            
+
         self.aggressor = startPart.getCurrentState().leader
         if self.aggressor and not self.aggressor in characters:
             characters.append(self.aggressor)
@@ -132,31 +138,31 @@ class HEvBattle(HistoricEvent):
         return state
 
     def getModifiedLocationState(self,location,state):
-        
+
         if location in self.participants:
             newState = copy.copy(state)
 
             if newState.leader in self.dyingCharacters:
                 newState.leader = None
-                
+
             if location==self.winner or location==self.loser:
                 newState.associatedCharacters += self.getCharacters()
-            
+
             if location == self.winner:
                 newState.storedItems += self.spoils
                 if self.conquest:
                     newState.subordinateLocs.append(self.loser)
                     if self.loser in newState.lostLocations:
                         newState.lostLocations.remove(self.loser)
-                    
+
             elif location == self.loser:
                 if self.conquest:
                     newState.adminLocation = self.winner
-                    
+
             elif location == self.formerAdmin and self.conquest:
                 newState.subordinateLocs.remove(self.loser)
                 newState.lostLocations.append(self.loser)
-                        
+
             return newState
         return state
 
@@ -207,7 +213,7 @@ class HEvBattle(HistoricEvent):
             if self.reconquest:
                 verb+=" as reconquest"
             verb += " in"
-            
+
         return "%s %s a war with %s in %i involving: %s \nkilling: %s\nSpoils: %s" % (location.getName(),
                                                                           verb,
                                                                           other.getName(),
@@ -241,9 +247,9 @@ class HEvDiplomaticBattle(HistoricEvent):
         if not inevitable and startPart.getPersonality().warmonger >= r.randint(1,15):
             self.setAlternateEvent(HEvBattle(pos,time,context,inevitable=True))
             return
-            
+
         self.participants = [startPart]
-            
+
 
         for p in participantNodes:
             part = p.getAttachedContext(HistoryLocation)
@@ -257,7 +263,7 @@ class HEvDiplomaticBattle(HistoricEvent):
         if len(self.participants)!=2:
             self.setSuccessful(False)
             return
-            
+
         if abs(self.participants[0].getPos()-self.participants[1].getPos()) > 15:
             self.setSuccessful(False)
             return
@@ -265,7 +271,7 @@ class HEvDiplomaticBattle(HistoricEvent):
         characters = []
         if startPart.getCurrentState().leader:
             characters = [startPart.getCurrentState().leader]
-            
+
         super().__init__(pos,time,characters,context,self.participants)
         self.updateCharacters()
         self.updateLocations()
@@ -293,5 +299,3 @@ class HEvDiplomaticBattle(HistoricEvent):
             return self.getDescription(self.getCharacters()[0])
         else:
             return "%s and %s solved their conflict\ndiplomatically in %i" % (self.participants[0].getName(),self.participants[1].getName(),self.getTime())
-
-

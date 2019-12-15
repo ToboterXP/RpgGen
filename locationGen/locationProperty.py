@@ -3,9 +3,10 @@ import randomUtil as ru
 
 
 class LocationPropertyType:
-    LPT_DESCRIPTION = object() #requires "getDescPrority(self)" and "getDescription(self)"
+    LPT_DESCRIPTION = object() #requires "getDescPrority(self)" and "getDescription(self), getLocationName(self)"
     LPT_INIT = object() #requires "onInit(self)"
     LPT_CONTEXT = object() #requires "getContextName(self)" and "getContext(self)"
+    LPT_INTERACTIONS = object() #requires "getInteractionNames(self)" and "getInteractionHandles(self) {<name>:<handle>}"
 
 
 class LocationProperty:
@@ -46,9 +47,10 @@ class BasicDescriptionProperty(LocationProperty):
     def getTypes(self):
         return [LocationPropertyType.LPT_DESCRIPTION]
 
-    def __init__(self,description,prio,location):
-        self.description = description
+    def __init__(self,location,prio,description,name=""):
+        self.description = rtt.generateText(description)
         self.prio = prio
+        self.name = name + str(ru.randint(0,100))
         super().__init__(location)
 
     def getDescPrority(self):
@@ -56,6 +58,12 @@ class BasicDescriptionProperty(LocationProperty):
 
     def getDescription(self):
         return self.description
+
+    def getLocationName(self):
+        return self.name
+
+    def __str__(self):
+        return str([self.description,self.name,hex(id(self))])
 
 class RandomObjectsProperty(LocationProperty):
     def getTypes(self):

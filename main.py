@@ -6,6 +6,7 @@ from mapGenerator import *
 from hydraulicMapGenerator import *
 from historyGen.historyMapGenerator import *
 from worldMapGen.worldMapGenerator import *
+from game.main import *
 import randomUtil as r
 import sys
 
@@ -74,6 +75,11 @@ def generateWorld(menu=True):
 
     print("Generating world map")
     world = generateWorldMap(coarseBiomeMap,fineBiomeMap,hydroMap,historyMap)
+
+    print("Starting game")
+    startGameAt(world, r.choice(world.getLocations()).getFirstRoom())
+
+    return False
 
     testLoc = r.choice(world.getLocations())
     testLoc.loadContent()

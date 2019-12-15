@@ -1,10 +1,12 @@
 import randomUtil as r
+import randomTextTemplate as rtt
 import copy
 from util import *
 from locationGen.locationProperty import *
+from game.game import Game
 
 class Location:
-    def __init__(self,type,given,seed,pos=Vector2(0,0),propertyTemplates=[]):
+    def __init__(self,type,given,seed,superLocation,pos=Vector2(0,0),propertyTemplates=[]):
         self.seed = seed
         self.pos = pos
         self.type = type
@@ -13,8 +15,37 @@ class Location:
         self.subLocations = []
         self.connections = []
         self.objects = []
+        self.superLocation = superLocation
+
+        self.isLoaded = False
+        self.topLocation = False
 
         self.properties = [t.instantiate(self) for t in propertyTemplates]
+
+    def setAsTopLocation(self):
+        self.topLocation = True
+
+    def isTopLocation(self):
+        return self.topLocation
+
+    def getTopLocation(self):
+        if self.isTopLocation():
+            return self
+        else:
+            return self.superLocation.getTopLocation()
+
+    def getFirstRoom(self):
+        if self.subLocations:
+            return self.subLocations[0].getFirstRoom()
+        else:
+            return self
+
+    def getInteractionHandles(self):
+        ret = {}
+        for p in self.getProperties(LocationPropertyType.LPT_INTERACTIONS):
+            ret.update(p.getInteractionHandles())
+
+        return ret
 
     def getProperties(self,type):
         for p in self.properties:
@@ -66,6 +97,10 @@ class Location:
         return self.type
 
     def loadContent(self):
+        if self.isLoaded:
+            return
+        self.isLoaded = True
+
         r.pushSeed(self.seed)
         self.subLocations = self.type.rootContentCollection.generateLocations(self.given,self.taken,self.connections,self)
         for loc in self.subLocations:
@@ -73,6 +108,10 @@ class Location:
         r.popSeed()
 
     def unloadContent(self,deleteConns=False):
+        if not self.isLoaded:
+            return
+        self.isLoaded = False
+
         for sl in self.subLocations[:]:
             sl.unloadContent(True)
             del sl
@@ -97,7 +136,14 @@ class Location:
 
         return ret[:-2]
 
-    def printSubLocations(self,prefix="",start=True):
+    def getName(self):
+        name = ""
+        for p in self.getProperties(LocationPropertyType.LPT_DESCRIPTION):
+            if p.getLocationName() != "":
+                name = p.getLocationName()
+        return name
+
+    def printSubLocations(self,prefix="",start=True,inDepth = False):
         if start:
             print(self.getLocationName(),self.type.name,self.pos)
         for sl in self.subLocations:
@@ -114,8 +160,12 @@ class Location:
                 else:
                     connections += "X, "
             connections = "("+connections[:-2]+")"
-            print(prefix+str(i)+".", sl.getDescription() ,connections,sl.getPos())
-            sl.printSubLocations(prefix+"  ",False)
+            print(prefix+str(i)+".", sl.getDescription()+"("+sl.getName()+")" ,connections,sl.getPos(),end=" ")
+            if inDepth:
+                print(sl,sl.properties)
+            else:
+                print()
+            sl.printSubLocations(prefix+"  ",False,inDepth=inDepth)
             if sl.getSubLocations():
                 print()
 

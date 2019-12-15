@@ -8,5 +8,5 @@ VillageRoadType = LocationType([VL_ROAD,LEVEL_ROOM],
                         LocationContentCollection.EMPTY,
                         "VillageRoad",
                         propertyTemplates = [
-                            BasicDescriptionPropertyTemplate(0,"A road")
+                            LocationPropertyTemplate(BasicDescriptionProperty,(0,"A road","road"))
                         ])

@@ -18,6 +18,23 @@ class Text:
             display.blit( FONT.render(line, True, (255,255,255)), pos)
             pos[1] += 14
 
+class InteractableText:
+    def __init__(self,title,onInteract,args):
+        self.title = title
+        self.menu = False
+        self.onInteract = onInteract
+        self.args = args
+
+    def getTitle(self):
+        return self.title
+
+    def draw(self, display, pos, scrollPos):
+        pass
+
+    def handleInput(self,key):
+        if key==pg.K_RETURN:
+            self.onInteract(*self.args)
+
 class List:
     def __init__(self,texts,title):
         self.texts = texts
@@ -34,7 +51,7 @@ class List:
                 display.blit( FONT.render(line, True, (255,255,255)), pos)
                 pos[1] += 14
             pos[1] += 12
-            
+
 
 class Menu:
     def __init__(self, elements, name, color):
@@ -118,31 +135,36 @@ class Menu:
                     if search=="":
                         done = True
             return
-            
+
         if self.focused:
             if key == pg.K_UP:
                 self.currentScrollPos = 0
                 self.selectedIndex = (self.selectedIndex-1) % len(self.elements)
-                
-            if key == pg.K_DOWN:
+
+            elif key == pg.K_DOWN:
                 self.currentScrollPos = 0
                 self.selectedIndex = (self.selectedIndex+1) % len(self.elements)
-                
-            if key == pg.K_RIGHT:
+
+            elif key == pg.K_RIGHT:
                  if self.elements[self.selectedIndex].menu and self.elements[self.selectedIndex].getElements():
                     self.elements[self.selectedIndex].passFocus(0)
                     self.focused = False
-                    
-            if key == pg.K_LEFT:
+
+            elif key == pg.K_LEFT:
                 if self.super:
                     self.super.passFocus(self.super.getElements().index(self))
                     self.focused = False
                     self.selectedIndex = 0
 
-            if key == pg.K_KP_PLUS:
+            elif key == pg.K_KP_PLUS:
                 self.currentScrollPos += 1
-            if key == pg.K_KP_MINUS:
+            elif key == pg.K_KP_MINUS:
                 self.currentScrollPos -= 1
+            else:
+                try:
+                    self.elements[self.selectedIndex].handleInput(key)
+                except:
+                    pass
         else:
             self.elements[self.selectedIndex].handleInput(key)
 
@@ -157,7 +179,7 @@ def createMenuWindow(menu):
         menu.draw(display, (10,10), 0)
         pg.display.flip()
 
-        for event in pg.event.get(): 
+        for event in pg.event.get():
             if event.type==pg.QUIT:
                 pg.quit()
                 return False
@@ -170,10 +192,10 @@ def createMenuWindow(menu):
             else:
                 if key in pressed:
                     pressed.remove(key)
-        
+
 
 if __name__=="__main__":
-    
+
     testText1 = Text("This is\nsome test text","Test")
     testText2 = Text("This is just some other test text","Test2")
 
@@ -185,17 +207,3 @@ if __name__=="__main__":
     testMenu3 = Menu((testMenu, testMenu2),"",(0,255,0))
 
     createMenuWindow(testMenu3)
-
-
-
-
-
-
-
-
-
-
-
-                  
-        
-    

@@ -21,7 +21,8 @@ def generateWorldMap(coarseMap,fineMap,hydraulicMap,historyMap,locationTransform
         locType = LOCATION_TEMPLATE_MAP.get(l.getLocationType().name)
         if not locType:
             continue
-        worldLoc = Location(locType.locationType,[],ru.getRandomSeed(),l.getPos()*locationTransform)
+        worldLoc = Location(locType.locationType,[],ru.getRandomSeed(),None,pos=l.getPos()*locationTransform)
+        worldLoc.setAsTopLocation()
         worldLoc.attachProperty( LocationPropertyTemplate(ContextProperty, ("HistoryLocation",l)) )
         world.addLocation(worldLoc)
         comboLocs.append(ComboLoc(l,worldLoc,locType))

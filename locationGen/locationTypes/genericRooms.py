@@ -9,7 +9,7 @@ LivingRoomType = LocationType([RO_GEN_LIVING_QUARTER,LEVEL_ROOM],
                         LocationContentCollection.EMPTY,
                         "LivingRoom",
                         propertyTemplates = [
-                            BasicDescriptionPropertyTemplate(0,"A [nice|cozy|small] living room"),
+                            LocationPropertyTemplate(BasicDescriptionProperty,(0,"A [nice|cozy|small] living room","living room")),
                             LocationPropertyTemplate(RandomObjectsProperty, (VILLAGE_BASIC_FURNITURE,4,0.3))
                         ])
 
@@ -18,6 +18,6 @@ BedRoomType = LocationType([RO_GEN_SLEEPING_QUARTER,LEVEL_ROOM],
                         LocationContentCollection.EMPTY,
                         "BedRoom",
                         propertyTemplates = [
-                            BasicDescriptionPropertyTemplate(0,"A [nice|cozy|small] bed room"),
+                            LocationPropertyTemplate(BasicDescriptionProperty,(0,"A [nice|cozy|small] bed room","bed room")),
                             LocationPropertyTemplate(RandomObjectsProperty, (VILLAGE_BASIC_FURNITURE,3,0.3))
                         ])
